@@ -3,6 +3,10 @@ package service;
 
 import java.lang.reflect.Field;
 import java.util.Scanner;
+
+import exception.BankException;
+import exception.InsufficientFundsException;
+import exception.InvalidAmountException;
 import model.*;
 import util.*;
 import static util.Validator.*;
@@ -62,9 +66,52 @@ try {
 } catch (NoSuchFieldException | IllegalAccessException e) {
     System.out.println("Validation test failed.");
 }
+// Lab 08: Exception Handling
+System.out.println("\n----- EXCEPTION HANDLING -----");
 
-        // Restore balance for remaining program
-        accounts[0].deposit(5100);
+// Test insufficient funds
+Account testAccount = new SavingsAccount("Test", 1000, 0);
+
+try {
+    testAccount.withdraw(5000);
+} catch (InsufficientFundsException e) {
+    System.out.println("Withdrawal failed: " + e.getMessage());
+    System.out.println("Shortfall: " + e.getShortfall());
+} catch (InvalidAmountException e) {
+    System.out.println("Invalid amount: " + e.getMessage());
+} finally {
+    System.out.println("Withdrawal attempt completed.");
+}
+
+// Test invalid deposit
+try {
+    testAccount.deposit(0);
+} catch (InvalidAmountException e) {
+    System.out.println("Deposit failed: " + e.getMessage());
+} finally {
+    System.out.println("Deposit attempt completed.");
+}
+
+// Test transfer
+try {
+    accounts[0].transfer(accounts[1], 1000);
+    System.out.println("Transfer successful.");
+} catch (BankException e) {
+    System.out.println("Transfer failed: " + e.getMessage());
+} finally {
+    System.out.println("Transfer test completed.");
+}
+
+// Test try-with-resources
+System.out.println("\n----- TRY WITH RESOURCES -----");
+
+try (BankResource resource = new BankResource()) {
+    System.out.println("Resource opened.");
+    throw new IllegalStateException("Demo exception inside resource block.");
+} catch (IllegalStateException e) {
+    System.out.println("Original error: " + e.getMessage());
+}
+        
 
 
         // Mobile validation
