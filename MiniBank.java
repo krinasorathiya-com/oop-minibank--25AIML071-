@@ -93,8 +93,7 @@ for (Account account : accounts) {
 }
 
         // Print formatted statement
-        System.out.println("\n"
-                + StatementFormatter.buildStatement(a1));
+        System.out.println(StatementFormatter.buildStatement(accounts[0]));
 
         // Existing MiniBank menu
         while (true) {

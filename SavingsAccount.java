@@ -1,9 +1,13 @@
 
 public class SavingsAccount extends Account {
-    private long minBalance;
 
+private long minBalance;
+
+public long getMinBalance() {
+    return minBalance;
+}
     public SavingsAccount(String ownerName, long openingBalance,
-                          long minBalance) {
+                        long minBalance) {
         super(ownerName, openingBalance);
         this.minBalance = minBalance;
     }
