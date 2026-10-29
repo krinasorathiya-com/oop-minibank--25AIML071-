@@ -72,15 +72,25 @@ public class MiniBank {
             System.out.println("Error: " + e.getMessage());
         }
 
-        // Create accounts using the existing Account class
-        Account a1 = new Account("Krina", 5000);
-        Account a2 = new Account("Meera", 0);
-        Account a3 = new Account("Bhakti", 3000);
+        
+System.out.println("\n----- ACCOUNT TYPES -----");
 
-        System.out.println("\n----- ACCOUNT DETAILS -----");
-        System.out.println(a1);
-        System.out.println(a2);
-        System.out.println(a3);
+Account[] accounts = {
+    new SavingsAccount("Krina", 5000, 1000),
+    new CurrentAccount("Meera", 2000, 5000),
+    new FixedDepositAccount("Bhakti", 10000)
+};
+
+for (Account account : accounts) {
+    System.out.println(account.getOwnerName()
+            + " | Interest Rate: " + account.interestRate()
+            + "%");
+
+    if (account instanceof SavingsAccount savings) {
+        System.out.println("Minimum Balance: "
+                + savings.getMinBalance());
+    }
+}
 
         // Print formatted statement
         System.out.println("\n"

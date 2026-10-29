@@ -1,6 +1,4 @@
-
-public class Account {
-
+public abstract class Account {
     private final String accountNumber;
     private String ownerName;
     private long balance;
@@ -26,12 +24,12 @@ public class Account {
         this(ownerName, 0);
     }
 
-    // Copy constructor for testing equals()
-    public Account(Account other) {
-        this.accountNumber = other.accountNumber;
-        this.ownerName = other.ownerName;
-        this.balance = other.balance;
-        this.active = other.active;
+    public abstract double interestRate();
+
+    public abstract boolean canWithdraw(long amount);
+
+    public double monthlyInterest() {
+        return balance * interestRate() / 100.0 / 12.0;
     }
 
     public void deposit(long amount) {
@@ -40,15 +38,15 @@ public class Account {
             return;
         }
 
-        balance = balance + amount;
+        balance += amount;
     }
 
     public boolean withdraw(long amount) {
-        if (amount <= 0 || amount > balance) {
+        if (amount <= 0 || !canWithdraw(amount)) {
             return false;
         }
 
-        balance = balance - amount;
+        balance -= amount;
         return true;
     }
 
