@@ -1,5 +1,5 @@
 
-package service;
+package src.test.java.service;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;

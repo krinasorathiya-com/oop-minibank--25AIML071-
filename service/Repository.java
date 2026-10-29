@@ -1,5 +1,5 @@
 
-package service;
+package src.test.java.service;
 
 import model.annotation.Id;
 
