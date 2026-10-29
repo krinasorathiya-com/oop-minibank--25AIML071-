@@ -1,6 +1,11 @@
 package model;
-public class CurrentAccount extends Account {
+
+import java.io.Serializable;
+
+public class CurrentAccount extends Account implements Serializable {
     private long overdraftLimit;
+    private static final long serialVersionUID = 1L;
+    
 
     public CurrentAccount(String ownerName, long openingBalance,
                         long overdraftLimit) {

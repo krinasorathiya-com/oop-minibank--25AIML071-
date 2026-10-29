@@ -1,8 +1,9 @@
 package model;
-public class SavingsAccount extends Account {
+import java.io.Serializable;
+public class SavingsAccount extends Account implements Serializable {
 
 private long minBalance;
-
+private static final long serialVersionUID = 1L;
 public long getMinBalance() {
     return minBalance;
 }

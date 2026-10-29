@@ -5,10 +5,12 @@ import exception.AccountNotFoundException;
 import exception.BankException;
 import exception.InsufficientFundsException;
 import exception.InvalidAmountException;
+import java.io.Serializable;
 import model.annotation.Id;
 import model.annotation.Positive;
 
-public abstract class Account implements Transactable, InterestBearing {
+public abstract class Account
+        implements Transactable, InterestBearing, Serializable {
 
     @Id
     private final String accountNumber;
@@ -19,14 +21,17 @@ public abstract class Account implements Transactable, InterestBearing {
     private long balance;
 
     private boolean active;
+    private transient String sessionNote = "Active session";
 
     private static long accountCounter = 0;
+    private static final long serialVersionUID = 1L;
 
     public Account(String ownerName, long openingBalance) {
         accountCounter++;
 
         this.accountNumber = String.format("AC%04d", accountCounter);
         this.ownerName = ownerName;
+
 
         if (openingBalance >= 0) {
             this.balance = openingBalance;
