@@ -1,6 +1,7 @@
 
 package service;
 
+import java.lang.reflect.Field;
 import java.util.Scanner;
 import model.*;
 import util.*;
@@ -36,6 +37,35 @@ public class MiniBank {
             new CurrentAccount("Meera", 2000, 5000),
             new FixedDepositAccount("Bhakti", 10000)
         };
+        
+        System.out.println("\n----- ANNOTATION VALIDATION -----");
+
+// Valid account test
+String[] validErrors = AnnotationValidator.validate(accounts[0]);
+System.out.println("Valid account errors: " + validErrors.length);
+
+// Negative balance test using reflection
+try {
+    Field balanceField = Account.class.getDeclaredField("balance");
+    balanceField.setAccessible(true);
+    balanceField.setLong(accounts[0], -100);
+
+    String[] errors = AnnotationValidator.validate(accounts[0]);
+
+    for (String error : errors) {
+        System.out.println(error);
+    }
+
+    // Restore original balance
+    balanceField.setLong(accounts[0], 5000);
+
+} catch (NoSuchFieldException | IllegalAccessException e) {
+    System.out.println("Validation test failed.");
+}
+
+        // Restore balance for remaining program
+        accounts[0].deposit(5100);
+
 
         // Mobile validation
         System.out.println("\n----- MOBILE VALIDATION -----");

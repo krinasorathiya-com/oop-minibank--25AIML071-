@@ -1,15 +1,30 @@
+
 package model;
 
+import exception.BankException;
+import exception.InsufficientFundsException;
+import exception.InvalidAmountException;
+import exception.AccountNotFoundException;
+import model.annotation.Id;
+import model.annotation.Positive;
+
 public abstract class Account implements Transactable, InterestBearing {
+
+    @Id
     private final String accountNumber;
+
     private String ownerName;
+
+    @Positive
     private long balance;
+
     private boolean active;
 
     private static long accountCounter = 0;
 
     public Account(String ownerName, long openingBalance) {
         accountCounter++;
+
         this.accountNumber = String.format("AC%04d", accountCounter);
         this.ownerName = ownerName;
 
@@ -34,35 +49,75 @@ public abstract class Account implements Transactable, InterestBearing {
         return balance * interestRate() / 100.0 / 12.0;
     }
 
-    public void deposit(long amount) {
+    public void deposit(long amount) throws InvalidAmountException {
         if (amount <= 0) {
-            System.out.println("Deposit amount must be positive.");
-            return;
+            throw new InvalidAmountException(
+                    "Deposit amount must be positive."
+            );
         }
 
         balance += amount;
     }
 
-    public boolean withdraw(long amount) {
-        if (amount <= 0 || !canWithdraw(amount)) {
-            return false;
+    public boolean withdraw(long amount)
+            throws InsufficientFundsException, InvalidAmountException {
+
+        if (amount <= 0) {
+            throw new InvalidAmountException(
+                    "Withdrawal amount must be positive."
+            );
+        }
+
+        if (!canWithdraw(amount)) {
+            long shortfall = amount - balance;
+
+            if (shortfall < 0) {
+                shortfall = 0;
+            }
+
+            throw new InsufficientFundsException(shortfall);
         }
 
         balance -= amount;
         return true;
     }
 
-    public static boolean transfer(Account from, Account to, long amount) {
-        if (from == null || to == null || from == to || amount <= 0) {
-            return false;
-        }
+    public void transfer(Account to, long amount) throws BankException {
+        try {
+            if (to == null) {
+                throw new AccountNotFoundException(
+                        "Destination account not found."
+                );
+            }
 
-        if (from.withdraw(amount)) {
+            withdraw(amount);
             to.deposit(amount);
-            return true;
+
+        } catch (BankException e) {
+            throw e;
+
+        } finally {
+            System.out.println("Transfer operation completed.");
+        }
+    }
+
+    public static boolean transfer(Account from, Account to, long amount)
+            throws BankException {
+
+        if (from == null || to == null) {
+            throw new AccountNotFoundException(
+                    "Source or destination account not found."
+            );
         }
 
-        return false;
+        if (from == to) {
+            throw new BankException(
+                    "Cannot transfer to the same account."
+            );
+        }
+
+        from.transfer(to, amount);
+        return true;
     }
 
     public String getAccountNumber() {
@@ -83,8 +138,8 @@ public abstract class Account implements Transactable, InterestBearing {
 
     @Override
     public String toString() {
-        return accountNumber + " | " + ownerName + " | " + balance
-                + " | Active: " + active;
+        return accountNumber + " | " + ownerName + " | "
+                + balance + " | Active: " + active;
     }
 
     @Override
@@ -98,6 +153,7 @@ public abstract class Account implements Transactable, InterestBearing {
         }
 
         Account other = (Account) o;
+
         return accountNumber.equals(other.accountNumber);
     }
 
