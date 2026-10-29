@@ -1,10 +1,10 @@
+
 package service;
 
 import java.util.Scanner;
 import model.*;
 import util.*;
 import static util.Validator.*;
-
 
 record BankInfo(String name, String branch) {}
 
@@ -30,110 +30,88 @@ public class MiniBank {
         System.out.println(bank.branch());
         System.out.println("================================");
 
-        // Test mobile validation
-        System.out.println("\n----- MOBILE VALIDATION -----");
-        System.out.println("9876543210: "
-                + Validator.isValidMobile("9876543210"));
-        System.out.println("12345: "
-                + Validator.isValidMobile("12345"));
+        // Create all account objects first
+        Account[] accounts = {
+            new SavingsAccount("Krina", 5000, 1000),
+            new CurrentAccount("Meera", 2000, 5000),
+            new FixedDepositAccount("Bhakti", 10000)
+        };
 
-        // Test email validation
+        // Mobile validation
+        System.out.println("\n----- MOBILE VALIDATION -----");
+        System.out.println("9876543210: " + isValidMobile("9876543210"));
+        System.out.println("12345: " + isValidMobile("12345"));
+
+        // Email validation
         System.out.println("\n----- EMAIL VALIDATION -----");
         System.out.println("krina@example.com: "
-                + Validator.isValidEmail("krina@example.com"));
+                + isValidEmail("krina@example.com"));
         System.out.println("krina@wrong: "
-                + Validator.isValidEmail("krina@wrong"));
+                + isValidEmail("krina@wrong"));
 
-        // Test PAN validation
+        // PAN validation
         System.out.println("\n----- PAN VALIDATION -----");
-        System.out.println("ABCDE1234F: "
-                + Validator.isValidPan("ABCDE1234F"));
-        System.out.println("12345: "
-                + Validator.isValidPan("12345"));
+        System.out.println("ABCDE1234F: " + isValidPan("ABCDE1234F"));
+        System.out.println("12345: " + isValidPan("12345"));
 
-        // Test IFSC validation
+        // IFSC validation
         System.out.println("\n----- IFSC VALIDATION -----");
-        System.out.println("SBIN0001234: "
-                + Validator.isValidIfsc("SBIN0001234"));
-        System.out.println("ABC123: "
-                + Validator.isValidIfsc("ABC123"));
+        System.out.println("SBIN0001234: " + isValidIfsc("SBIN0001234"));
+        System.out.println("ABC123: " + isValidIfsc("ABC123"));
 
-        // Test supplementary amount validation
+        // Amount validation
         System.out.println("\n----- AMOUNT VALIDATION -----");
-        System.out.println("500: " + Validator.isValidAmount("500"));
-        System.out.println("-500: " + Validator.isValidAmount("-500"));
+        System.out.println("500: " + isValidAmount("500"));
+        System.out.println("-500: " + isValidAmount("-500"));
 
-        // Parse a sample command
+        // Command parser
         System.out.println("\n----- COMMAND PARSER -----");
-System.out.println("\n----- WITHDRAW RULE -----");
-WithdrawRule rule1 = new WithdrawRule() {
-    @Override
-    public boolean allow(Account account, long amount) {
-        return account.canWithdraw(amount);
-    }
-};
 
-WithdrawRule rule2 = (account, amount) ->
-        account.canWithdraw(amount);
+        Command command = CommandParser.parse("DEPOSIT AC0001 500");
 
-System.out.println("Anonymous class: "
-        + rule1.allow(accounts[0], 1000));
+        System.out.println("type=" + command.type()
+                + ", accountNumber=" + command.accountNumber()
+                + ", amount=" + command.amount());
 
-System.out.println("Lambda: "
-        + rule2.allow(accounts[0], 1000));
+        // Account types and polymorphism
+        System.out.println("\n----- ACCOUNT TYPES -----");
 
-// Anonymous class
-WithdrawRule rule1 = new WithdrawRule() {
-    @Override
-    public boolean allow(Account account, long amount) {
-        return account.canWithdraw(amount);
-    }
-};
+        for (Account account : accounts) {
+            System.out.println(account.getOwnerName()
+                    + " | Interest Rate: "
+                    + account.interestRate() + "%");
 
-// Lambda expression
-WithdrawRule rule2 = (account, amount) ->
-        account.canWithdraw(amount);
-
-System.out.println("Anonymous class: "
-        + rule1.allow(accounts[0], 1000));
-
-System.out.println("Lambda: "
-        + rule2.allow(accounts[0], 1000));
-        try {
-            Command command = CommandParser.parse("DEPOSIT AC0001 500");
-
-            System.out.println("type=" + command.type()
-                    + ", accountNumber=" + command.accountNumber()
-                    + ", amount=" + command.amount());
-
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
+            if (account instanceof SavingsAccount savings) {
+                System.out.println("Minimum Balance: "
+                        + savings.getMinBalance());
+            }
         }
 
-        
-System.out.println("\n----- ACCOUNT TYPES -----");
+        // WithdrawRule using an anonymous class
+        System.out.println("\n----- WITHDRAW RULE -----");
 
-Account[] accounts = {
-    new SavingsAccount("Krina", 5000, 1000),
-    new CurrentAccount("Meera", 2000, 5000),
-    new FixedDepositAccount("Bhakti", 10000)
-};
+        WithdrawRule rule1 = new WithdrawRule() {
+            @Override
+            public boolean allow(Account account, long amount) {
+                return account.canWithdraw(amount);
+            }
+        };
 
-for (Account account : accounts) {
-    System.out.println(account.getOwnerName()
-            + " | Interest Rate: " + account.interestRate()
-            + "%");
+        // WithdrawRule using a lambda expression
+        WithdrawRule rule2 = (account, amount) ->
+                account.canWithdraw(amount);
 
-    if (account instanceof SavingsAccount savings) {
-        System.out.println("Minimum Balance: "
-                + savings.getMinBalance());
-    }
-}
+        System.out.println("Anonymous class: "
+                + rule1.allow(accounts[0], 1000));
 
-        // Print formatted statement
+        System.out.println("Lambda: "
+                + rule2.allow(accounts[0], 1000));
+
+        // Account statement
+        System.out.println("\n----- ACCOUNT STATEMENT -----");
         System.out.println(StatementFormatter.buildStatement(accounts[0]));
 
-        // Existing MiniBank menu
+        // Menu
         while (true) {
             System.out.println("\n----- MENU -----");
             System.out.println("1. Open Account");
@@ -153,9 +131,7 @@ for (Account account : accounts) {
             int choice = sc.nextInt();
 
             if (choice < 1 || choice > 6) {
-                System.out.println(
-                        "Invalid choice! Please enter a number between 1 and 6."
-                );
+                System.out.println("Invalid choice! Please try again.");
                 continue;
             }
 
@@ -165,35 +141,29 @@ for (Account account : accounts) {
                 case 3 -> MenuOption.WITHDRAW;
                 case 4 -> MenuOption.TRANSFER;
                 case 5 -> MenuOption.WORKING_HOURS;
-                case 6 -> MenuOption.EXIT;
-                default -> throw new IllegalStateException("Unexpected value");
+                default -> MenuOption.EXIT;
             };
 
             switch (option) {
                 case OPEN_ACCOUNT ->
-                        System.out.println(
-                                "Open Account - To be implemented in a later lab."
-                        );
+                    System.out.println(
+                            "Open Account - To be implemented in a later lab.");
 
                 case DEPOSIT ->
-                        System.out.println(
-                                "Deposit - To be implemented in a later lab."
-                        );
+                    System.out.println(
+                            "Deposit - To be implemented in a later lab.");
 
                 case WITHDRAW ->
-                        System.out.println(
-                                "Withdraw - To be implemented in a later lab."
-                        );
+                    System.out.println(
+                            "Withdraw - To be implemented in a later lab.");
 
                 case TRANSFER ->
-                        System.out.println(
-                                "Transfer - To be implemented in a later lab."
-                        );
+                    System.out.println(
+                            "Transfer - To be implemented in a later lab.");
 
                 case WORKING_HOURS ->
-                        System.out.println(
-                                "Bank Working Hours: Monday to Saturday, 9:00 AM to 5:00 PM"
-                        );
+                    System.out.println("Working Hours: Monday to Friday, "
+                            + "9:00 AM to 5:00 PM");
 
                 case EXIT -> {
                     System.out.println("Thank you for using MiniBank.");
