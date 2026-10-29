@@ -1,5 +1,5 @@
 
-package src.test.java.service;
+package service;
 
 import exception.BankException;
 import java.io.IOException;
