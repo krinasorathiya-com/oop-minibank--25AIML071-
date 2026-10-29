@@ -1,3 +1,4 @@
+package util;
 
 public record Command(
         TransactionType type,

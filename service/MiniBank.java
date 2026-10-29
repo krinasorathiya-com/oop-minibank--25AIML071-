@@ -1,5 +1,14 @@
+package service;
 
 import java.util.Scanner;
+import model.Account;
+import model.CurrentAccount;
+import model.FixedDepositAccount;
+import model.SavingsAccount;
+import util.Command;
+import util.CommandParser;
+import util.StatementFormatter;
+import util.Validator;
 
 record BankInfo(String name, String branch) {}
 

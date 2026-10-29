@@ -1,3 +1,4 @@
+package model;
 public abstract class Account {
     private final String accountNumber;
     private String ownerName;
