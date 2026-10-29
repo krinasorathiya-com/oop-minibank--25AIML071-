@@ -4,8 +4,8 @@ package util;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import model.annotation.Positive;
 import model.annotation.MaxLength;
+import model.annotation.Positive;
 
 public class AnnotationValidator {
 
@@ -14,7 +14,7 @@ public class AnnotationValidator {
 
         if (obj == null) {
             errors.add("Object cannot be null");
-            return errors.toArray(new String[0]);
+            return errors.toArray(String[]::new);
         }
 
         Field[] fields = obj.getClass().getDeclaredFields();
@@ -57,6 +57,6 @@ if (obj instanceof model.Account) {
             }
         }
 
-        return errors.toArray(new String[0]);
+        return errors.toArray(String[]::new);
     }
 }

@@ -1,9 +1,7 @@
 package model;
 
-import java.io.Serializable;
-
-public class CurrentAccount extends Account implements Serializable {
-    private long overdraftLimit;
+public class CurrentAccount extends Account {
+    private final long overdraftLimit;
     private static final long serialVersionUID = 1L;
     
 

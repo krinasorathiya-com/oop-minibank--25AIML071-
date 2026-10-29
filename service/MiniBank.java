@@ -1,13 +1,14 @@
 
 package service;
 
-import exception.BankException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import exception.BankException;
 import model.Account;
 import model.CurrentAccount;
 import model.FixedDepositAccount;
@@ -314,8 +315,7 @@ public class MiniBank {
 
         ArrayList<Account> accounts = bankService.listAccounts();
 
-        StatePersister.save(
-                accounts.toArray(new Account[0]), ACCOUNTS_FILE);
+        StatePersister.save(accounts.toArray(Account[]::new), ACCOUNTS_FILE);
 
         ReportGenerator.generate(LOG_DIRECTORY, REPORT_FILE);
 

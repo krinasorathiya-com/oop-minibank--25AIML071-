@@ -1,15 +1,14 @@
 package service;
 
+import java.util.ArrayList;
+
 import exception.AccountNotFoundException;
 import exception.BankException;
 import exception.InvalidAmountException;
 import model.Account;
-import model.SavingsAccount;
 import model.CurrentAccount;
 import model.FixedDepositAccount;
-import util.Validator;
-
-import java.util.ArrayList;
+import model.SavingsAccount;
 
 public class BankService {
 
@@ -48,30 +47,20 @@ public class BankService {
         Account account;
 
         switch (accountType.trim().toUpperCase()) {
-            case "SAVINGS":
-                account = new SavingsAccount(
+            case "SAVINGS" -> account = new SavingsAccount(
                         ownerName, openingBalance, 1000
                 );
-                break;
 
-            case "CURRENT":
-                account = new CurrentAccount(
+            case "CURRENT" -> account = new CurrentAccount(
                         ownerName, openingBalance, 5000
                 );
-                break;
 
-            case "FIXED_DEPOSIT":
-            case "FIXED DEPOSIT":
-            case "FD":
-                account = new FixedDepositAccount(
-                        ownerName, openingBalance
-                );
-                break;
-
-            default:
-                throw new BankException(
-                        "Invalid account type. Use SAVINGS, CURRENT or FD."
-                );
+            case "FIXED_DEPOSIT", "FIXED DEPOSIT", "FD" -> account = new FixedDepositAccount(
+                    ownerName, openingBalance
+            );
+            default -> throw new BankException(
+                    "Invalid account type. Use SAVINGS, CURRENT or FD."
+            );
         }
 
         repository.save(account);

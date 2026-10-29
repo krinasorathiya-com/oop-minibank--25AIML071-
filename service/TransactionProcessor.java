@@ -1,19 +1,13 @@
 
-package src.test.java.service;
+package service;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-
-import model.Account;
 
 public class TransactionProcessor {
 
     private final ExecutorService executor;
-    private final ConcurrentHashMap<String, Account> accounts =
-        new ConcurrentHashMap<>();
 
     public TransactionProcessor() {
         executor = Executors.newFixedThreadPool(4);
