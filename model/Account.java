@@ -1,10 +1,10 @@
 
 package model;
 
+import exception.AccountNotFoundException;
 import exception.BankException;
 import exception.InsufficientFundsException;
 import exception.InvalidAmountException;
-import exception.AccountNotFoundException;
 import model.annotation.Id;
 import model.annotation.Positive;
 
@@ -49,7 +49,7 @@ public abstract class Account implements Transactable, InterestBearing {
         return balance * interestRate() / 100.0 / 12.0;
     }
 
-    public void deposit(long amount) throws InvalidAmountException {
+    public synchronized void deposit(long amount) throws InvalidAmountException {
         if (amount <= 0) {
             throw new InvalidAmountException(
                     "Deposit amount must be positive."
@@ -59,7 +59,7 @@ public abstract class Account implements Transactable, InterestBearing {
         balance += amount;
     }
 
-    public boolean withdraw(long amount)
+    public synchronized boolean withdraw(long amount)
             throws InsufficientFundsException, InvalidAmountException {
 
         if (amount <= 0) {

@@ -1,12 +1,11 @@
 
 package service;
 
-import java.lang.reflect.Field;
-import java.util.Scanner;
-
 import exception.BankException;
 import exception.InsufficientFundsException;
 import exception.InvalidAmountException;
+import java.lang.reflect.Field;
+import java.util.Scanner;
 import model.*;
 import util.*;
 import static util.Validator.*;
@@ -42,7 +41,93 @@ public class MiniBank {
             new FixedDepositAccount("Bhakti", 10000)
         };
         
-        System.out.println("\n----- ANNOTATION VALIDATION -----");
+System.out.println("\n----- LAB 09: THREAD SYNCHRONIZATION -----");
+
+Account threadAccount = new SavingsAccount("ThreadTest", 0, 0);
+
+int threadCount = 10;
+int depositsPerThread = 1000;
+
+Thread[] workers = new Thread[threadCount];
+
+for (int i = 0; i < threadCount; i++) {
+    workers[i] = new Thread(
+            new AccountWorker(threadAccount, depositsPerThread, 1),
+            "Worker-" + (i + 1)
+    );
+    workers[i].start();
+}
+
+for (Thread worker : workers) {
+    try {
+        worker.join();
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        System.out.println("Main thread was interrupted.");
+        return;
+    }
+}
+
+System.out.println("Expected balance: 10000");
+System.out.println("Actual balance: " + threadAccount.getBalance());
+
+       
+
+System.out.println("\n----- LAB 10: TRANSACTION PROCESSOR -----");
+
+Account poolAccount = new SavingsAccount("PoolTest", 10000, 0);
+
+TransactionProcessor processor = new TransactionProcessor();
+
+for (int i = 1; i <= 10; i++) {
+    final int taskId = i;
+
+    processor.submit(() -> {
+        try {
+            poolAccount.deposit(100);
+
+            System.out.println(
+                    Thread.currentThread().getName()
+                    + " executed Deposit Task " + taskId
+            );
+        } catch (Exception e) {
+            System.out.println(
+                    "Deposit Task " + taskId + " failed: "
+                    + e.getMessage()
+            );
+        }
+    });
+}
+
+for (int i = 1; i <= 5; i++) {
+    final int taskId = i;
+
+    processor.submit(() -> {
+        try {
+            poolAccount.withdraw(50);
+
+            System.out.println(
+                    Thread.currentThread().getName()
+                    + " executed Withdrawal Task " + taskId
+            );
+        } catch (Exception e) {
+            System.out.println(
+                    "Withdrawal Task " + taskId + " failed: "
+                    + e.getMessage()
+            );
+        }
+    });
+}
+
+processor.stop();
+
+System.out.println(
+        "Expected balance: 10750"
+);
+System.out.println(
+        "Actual balance: " + poolAccount.getBalance()
+);
+System.out.println("\n----- ANNOTATION VALIDATION -----");
 
 // Valid account test
 String[] validErrors = AnnotationValidator.validate(accounts[0]);
