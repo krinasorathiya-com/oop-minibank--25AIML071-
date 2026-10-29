@@ -99,6 +99,44 @@ for (int i = 1; i <= 10; i++) {
     });
 }
 
+System.out.println("\n----- PRODUCER-CONSUMER -----");
+
+TransactionBuffer buffer = new TransactionBuffer(3);
+
+Thread producer = new Thread(() -> {
+    try {
+        for (int i = 1; i <= 10; i++) {
+            buffer.put(i);
+        }
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    }
+}, "Producer");
+
+Thread consumer = new Thread(() -> {
+    try {
+        for (int i = 1; i <= 10; i++) {
+            int transaction = buffer.take();
+            System.out.println(
+                    "Consumed transaction: " + transaction
+            );
+        }
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    }
+}, "Consumer");
+
+producer.start();
+consumer.start();
+
+try {
+    producer.join();
+    consumer.join();
+} catch (InterruptedException e) {
+    Thread.currentThread().interrupt();
+    System.out.println("Main thread interrupted.");
+}
+
 for (int i = 1; i <= 5; i++) {
     final int taskId = i;
 

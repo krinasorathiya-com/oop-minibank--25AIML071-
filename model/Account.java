@@ -123,6 +123,49 @@ public abstract class Account implements Transactable, InterestBearing {
     public String getAccountNumber() {
         return accountNumber;
     }
+    
+    public static void transferWithOrderedLocks(
+            Account first, Account second, long amount)
+            throws BankException {
+
+        if (first == null || second == null) {
+            throw new AccountNotFoundException(
+                    "Source or destination account not found."
+            );
+        }
+
+        if (first == second) {
+            throw new BankException(
+                    "Cannot transfer to the same account."
+            );
+        }
+
+        Account lower;
+        Account higher;
+
+        if (first.getAccountNumber().compareTo(
+                second.getAccountNumber()) < 0) {
+            lower = first;
+            higher = second;
+        } else {
+            lower = second;
+            higher = first;
+        }
+
+        synchronized (lower) {
+            synchronized (higher) {
+                first.withdraw(amount);
+                second.deposit(amount);
+            }
+        }
+
+        System.out.println(
+                "Ordered transfer completed: "
+                + first.getAccountNumber() + " -> "
+                + second.getAccountNumber()
+        );
+    }
+
 
     public String getOwnerName() {
         return ownerName;
