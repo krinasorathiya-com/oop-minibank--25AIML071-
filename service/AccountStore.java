@@ -1,21 +1,27 @@
 
-package src.test.java.service;
-
-import model.Account;
+package service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import model.Account;
 
 public class AccountStore {
 
-    private final Map<String, Account> accounts = new HashMap<>();
-    private final ArrayList<String> transactionHistory =
-            new ArrayList<>();
+    private final ConcurrentMap<String, Account> accounts =
+            new ConcurrentHashMap<>();
+
+    private final List<String> transactionHistory =
+            new CopyOnWriteArrayList<>();
 
     public void add(Account account) {
+        if (account == null) {
+            throw new IllegalArgumentException("Account cannot be null.");
+        }
         accounts.put(account.getAccountNumber(), account);
     }
 
@@ -36,15 +42,10 @@ public class AccountStore {
     }
 
     public ArrayList<Account> sortedByBalance() {
-        ArrayList<Account> sorted =
-                new ArrayList<>(accounts.values());
-
+        ArrayList<Account> sorted = getAll();
         sorted.sort(
-                Comparator.comparingDouble(
-                        (Account account) -> account.getBalance()
-                ).reversed()
+                Comparator.comparingLong(Account::getBalance).reversed()
         );
-
         return sorted;
     }
 
@@ -60,7 +61,7 @@ public class AccountStore {
         return result;
     }
 
-    public Map<String, Account> getAccountsMap() {
-        return new HashMap<>(accounts);
+    public ConcurrentMap<String, Account> getAccountsMap() {
+        return new ConcurrentHashMap<>(accounts);
     }
 }

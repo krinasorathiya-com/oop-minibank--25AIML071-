@@ -1,5 +1,5 @@
 
-package src.test.java.service;
+package service;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

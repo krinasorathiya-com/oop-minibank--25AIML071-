@@ -1,5 +1,5 @@
 
-package src.test.java.service;
+package service;
 
 import java.io.IOException;
 import java.nio.file.Files;
