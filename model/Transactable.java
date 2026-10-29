@@ -1,5 +1,7 @@
 package model;
 
-public class Transactable {
-    
+public interface Transactable {
+    void deposit(long amount);
+
+    boolean withdraw(long amount);
 }

@@ -1,14 +1,9 @@
 package service;
 
-import java.util.Scanner;
-import model.Account;
-import model.CurrentAccount;
-import model.FixedDepositAccount;
-import model.SavingsAccount;
-import util.Command;
-import util.CommandParser;
-import util.StatementFormatter;
-import util.Validator;
+import model.*;
+import util.*;
+import static util.Validator.*;
+
 
 record BankInfo(String name, String branch) {}
 
@@ -69,7 +64,25 @@ public class MiniBank {
 
         // Parse a sample command
         System.out.println("\n----- COMMAND PARSER -----");
+System.out.println("\n----- WITHDRAW RULE -----");
 
+// Anonymous class
+WithdrawRule rule1 = new WithdrawRule() {
+    @Override
+    public boolean allow(Account account, long amount) {
+        return account.canWithdraw(amount);
+    }
+};
+
+// Lambda expression
+WithdrawRule rule2 = (account, amount) ->
+        account.canWithdraw(amount);
+
+System.out.println("Anonymous class: "
+        + rule1.allow(accounts[0], 1000));
+
+System.out.println("Lambda: "
+        + rule2.allow(accounts[0], 1000));
         try {
             Command command = CommandParser.parse("DEPOSIT AC0001 500");
 

@@ -1,5 +1,4 @@
 package model;
 
-public class Premium {
-    
+public interface Premium {
 }
