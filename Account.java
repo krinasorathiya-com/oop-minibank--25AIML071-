@@ -1,6 +1,4 @@
 
-import java.util.Objects;
-
 public class Account {
 
     private final String accountNumber;
@@ -14,7 +12,13 @@ public class Account {
         accountCounter++;
         this.accountNumber = String.format("AC%04d", accountCounter);
         this.ownerName = ownerName;
-        this.balance = Math.max(0, openingBalance);
+
+        if (openingBalance >= 0) {
+            this.balance = openingBalance;
+        } else {
+            this.balance = 0;
+        }
+
         this.active = true;
     }
 
@@ -22,7 +26,7 @@ public class Account {
         this(ownerName, 0);
     }
 
-    // Creates another object with the same account number for comparison.
+    // Copy constructor for testing equals()
     public Account(Account other) {
         this.accountNumber = other.accountNumber;
         this.ownerName = other.ownerName;
@@ -36,7 +40,7 @@ public class Account {
             return;
         }
 
-        balance += amount;
+        balance = balance + amount;
     }
 
     public boolean withdraw(long amount) {
@@ -44,7 +48,7 @@ public class Account {
             return false;
         }
 
-        balance -= amount;
+        balance = balance - amount;
         return true;
     }
 
@@ -77,14 +81,12 @@ public class Account {
         return active;
     }
 
-    // Prints the account in a readable format.
     @Override
     public String toString() {
         return accountNumber + " | " + ownerName + " | " + balance
                 + " | Active: " + active;
     }
 
-    // Accounts are equal when their account numbers match.
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -101,10 +103,9 @@ public class Account {
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountNumber);
+        return accountNumber.hashCode();
     }
 
-    // Supplementary problem: formatted multi-line statement.
     public String getStatement() {
         return "----- ACCOUNT STATEMENT -----\n"
                 + "Account Number: " + accountNumber + "\n"

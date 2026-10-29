@@ -15,8 +15,8 @@ enum MenuOption {
 public class MiniBank {
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
 
+        Scanner sc = new Scanner(System.in);
         BankInfo bank = new BankInfo("MiniBank", "Main Branch");
 
         System.out.println("================================");
@@ -24,33 +24,30 @@ public class MiniBank {
         System.out.println(bank.branch());
         System.out.println("================================");
 
-        // Create three accounts.
-        // Create three accounts.
-Account a1 = new Account("Krina", 5000);
-Account a2 = new Account("Meera", 0);
-Account a3 = new Account("Bhakti", 3000);
+        Account a1 = new Account("Krina", 5000);
+        Account a2 = new Account("Meera", 0);
+        Account a3 = new Account("Bhakti", 3000);
 
         a1.deposit(2000);
         a1.withdraw(3000);
-        a1.withdraw(10000); // Fails because balance is insufficient.
+        a1.withdraw(10000);
 
-        // Copy constructor creates a different object with the same account number.
-        Account a2 = new Account(a1);
+        // Copy account number to check equality.
+        Account a1Copy = new Account(a1);
 
         System.out.println("\n----- ACCOUNT DETAILS -----");
         System.out.println(a1.toString());
+        System.out.println(a2.toString());
         System.out.println(a3.toString());
 
         System.out.println("\n----- EQUALITY CHECK -----");
-        System.out.println("a1 equals a2: " + a1.equals(a2));
+        System.out.println("a1 equals a1Copy: " + a1.equals(a1Copy));
 
         Object obj = a1;
         System.out.println("Object is an Account: " + (obj instanceof Account));
 
-        System.out.println("\n----- ACCOUNT STATEMENT -----");
-        System.out.println(a1.getStatement());
+        System.out.println("\n" + a1.getStatement());
 
-        // Create a customer with an address.
         Customer.Address address = new Customer.Address(
                 "12, Green Park",
                 "Rajkot",
@@ -58,8 +55,8 @@ Account a3 = new Account("Bhakti", 3000);
         );
 
         Customer customer = new Customer(
-                "Riya",
-                "riya@example.com",
+                "Krina",
+                "krina@example.com",
                 "9876543210",
                 address
         );
@@ -67,19 +64,16 @@ Account a3 = new Account("Bhakti", 3000);
         System.out.println("\n----- CUSTOMER DETAILS -----");
         System.out.println("Customer ID: " + customer.getCustomerId());
         System.out.println("Name: " + customer.getName());
+        System.out.println("Email: " + customer.getEmail());
+        System.out.println("Mobile: " + customer.getMobile());
+        System.out.println("Address: " + customer.getAddress().getLine());
+        System.out.println("City: " + customer.getAddress().getCity());
+        System.out.println("Pincode: " + customer.getAddress().getPincode());
 
-        if (customer.getAddress() != null) {
-            System.out.println("Address: " + customer.getAddress().getLine());
-            System.out.println("City: " + customer.getAddress().getCity());
-            System.out.println("Pincode: " + customer.getAddress().getPincode());
-        }
-
-        // Clone the customer.
         Customer clonedCustomer = customer.clone();
         System.out.println("Customer cloned: " + (customer != clonedCustomer));
         System.out.println("Cloned customer name: " + clonedCustomer.getName());
 
-        // Original MiniBank menu.
         while (true) {
             System.out.println("\n----- MENU -----");
             System.out.println("1. Open Account");
@@ -117,29 +111,19 @@ Account a3 = new Account("Bhakti", 3000);
 
             switch (option) {
                 case OPEN_ACCOUNT ->
-                        System.out.println(
-                                "Open Account - To be implemented in a later lab."
-                        );
+                        System.out.println("Open Account - To be implemented in a later lab.");
 
                 case DEPOSIT ->
-                        System.out.println(
-                                "Deposit - To be implemented in a later lab."
-                        );
+                        System.out.println("Deposit - To be implemented in a later lab.");
 
                 case WITHDRAW ->
-                        System.out.println(
-                                "Withdraw - To be implemented in a later lab."
-                        );
+                        System.out.println("Withdraw - To be implemented in a later lab.");
 
                 case TRANSFER ->
-                        System.out.println(
-                                "Transfer - To be implemented in a later lab."
-                        );
+                        System.out.println("Transfer - To be implemented in a later lab.");
 
                 case WORKING_HOURS ->
-                        System.out.println(
-                                "Bank Working Hours: Monday to Saturday, 9:00 AM to 5:00 PM"
-                        );
+                        System.out.println("Bank Working Hours: Monday to Saturday, 9:00 AM to 5:00 PM");
 
                 case EXIT -> {
                     System.out.println("Thank you for using MiniBank.");

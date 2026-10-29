@@ -46,7 +46,6 @@ public class Customer implements Cloneable {
         return address;
     }
 
-    // Returns a copy of this Customer object.
     @Override
     public Customer clone() {
         try {
@@ -56,8 +55,8 @@ public class Customer implements Cloneable {
         }
     }
 
-    // Static nested class for customer address.
     public static class Address {
+
         private String line;
         private String city;
         private String pincode;
