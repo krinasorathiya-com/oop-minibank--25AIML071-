@@ -10,7 +10,7 @@ import model.annotation.Id;
 import model.annotation.Positive;
 
 public abstract class Account
-        implements Transactable, InterestBearing, Serializable {
+        implements Comparable<Account>,Transactable, InterestBearing, Serializable {
 
     @Id
     private final String accountNumber;
@@ -25,6 +25,9 @@ public abstract class Account
 
     private static long accountCounter = 0;
     private static final long serialVersionUID = 1L;
+    public String getSessionNote() {
+    return sessionNote;
+}
 
     public Account(String ownerName, long openingBalance) {
         accountCounter++;
@@ -209,7 +212,10 @@ public abstract class Account
     public int hashCode() {
         return accountNumber.hashCode();
     }
-
+public int compareTo(Account other) {
+    return this.getAccountNumber()
+               .compareTo(other.getAccountNumber());
+}
     public String getStatement() {
         return "----- ACCOUNT STATEMENT -----\n"
                 + "Account Number: " + accountNumber + "\n"
