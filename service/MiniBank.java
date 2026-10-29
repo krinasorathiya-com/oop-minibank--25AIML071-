@@ -1,5 +1,6 @@
 package service;
 
+import java.util.Scanner;
 import model.*;
 import util.*;
 import static util.Validator.*;
@@ -65,6 +66,21 @@ public class MiniBank {
         // Parse a sample command
         System.out.println("\n----- COMMAND PARSER -----");
 System.out.println("\n----- WITHDRAW RULE -----");
+WithdrawRule rule1 = new WithdrawRule() {
+    @Override
+    public boolean allow(Account account, long amount) {
+        return account.canWithdraw(amount);
+    }
+};
+
+WithdrawRule rule2 = (account, amount) ->
+        account.canWithdraw(amount);
+
+System.out.println("Anonymous class: "
+        + rule1.allow(accounts[0], 1000));
+
+System.out.println("Lambda: "
+        + rule2.allow(accounts[0], 1000));
 
 // Anonymous class
 WithdrawRule rule1 = new WithdrawRule() {

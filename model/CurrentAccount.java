@@ -3,7 +3,7 @@ public class CurrentAccount extends Account {
     private long overdraftLimit;
 
     public CurrentAccount(String ownerName, long openingBalance,
-                          long overdraftLimit) {
+                        long overdraftLimit) {
         super(ownerName, openingBalance);
         this.overdraftLimit = overdraftLimit;
     }
