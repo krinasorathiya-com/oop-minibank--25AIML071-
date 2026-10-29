@@ -25,8 +25,10 @@ public class MiniBank {
         System.out.println("================================");
 
         // Create three accounts.
-        Account a1 = new Account("Riya", 5000);
-        Account a3 = new Account("Neha", 3000);
+        // Create three accounts.
+Account a1 = new Account("Krina", 5000);
+Account a2 = new Account("Meera", 0);
+Account a3 = new Account("Bhakti", 3000);
 
         a1.deposit(2000);
         a1.withdraw(3000);
