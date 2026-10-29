@@ -1,7 +1,6 @@
 
-package service;
+package src.test.java.service;
 
-import exception.BankException;
 import model.Account;
 import model.SavingsAccount;
 
@@ -25,7 +24,7 @@ public class DeadlockDemo {
                     Account.transferWithOrderedLocks(
                             accountA, accountB, 1);
                 }
-            } catch (BankException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }, "Transfer-A-to-B");
@@ -36,7 +35,7 @@ public class DeadlockDemo {
                     Account.transferWithOrderedLocks(
                             accountB, accountA, 1);
                 }
-            } catch (BankException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }, "Transfer-B-to-A");

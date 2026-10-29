@@ -1,33 +1,31 @@
 
 package service;
 
+import model.Account;
+import exception.InsufficientFundsException;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import exception.InsufficientFundsException;
-import model.Account;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BankServiceTest {
 
     private BankService bankService;
 
+    @BeforeEach
     void setUp() {
         Repository<Account> repository = new Repository<>();
         bankService = new BankService(repository);
     }
 
-    public static void main(String[] args) throws Exception {
-        BankServiceTest tests = new BankServiceTest();
-        tests.setUp();
-        tests.depositShouldIncreaseBalance();
-        tests.setUp();
-        tests.withdrawalOverAvailableBalanceShouldThrow();
-        tests.setUp();
-        tests.concurrentDepositsShouldKeepBalanceCorrect();
-    }
-
+    @Test
     void depositShouldIncreaseBalance() throws Exception {
         Account account = bankService.openAccount(
                 "Test Customer", "SAVINGS", 5000
@@ -38,6 +36,7 @@ class BankServiceTest {
         assertEquals(5500, account.getBalance());
     }
 
+    @Test
     void withdrawalOverAvailableBalanceShouldThrow() throws Exception {
         Account account = bankService.openAccount(
                 "Test Customer", "SAVINGS", 5000
@@ -53,6 +52,7 @@ class BankServiceTest {
         assertTrue(exceptionThrown, "Expected insufficient funds exception");
     }
 
+    @Test
     void concurrentDepositsShouldKeepBalanceCorrect() throws Exception {
         Account account = bankService.openAccount(
                 "Concurrent Customer", "SAVINGS", 1000
@@ -99,18 +99,6 @@ class BankServiceTest {
 
         } finally {
             executor.shutdownNow();
-        }
-    }
-
-    private static void assertEquals(long expected, long actual) {
-        if (expected != actual) {
-            throw new AssertionError("Expected " + expected + " but was " + actual);
-        }
-    }
-
-    private static void assertTrue(boolean condition, String message) {
-        if (!condition) {
-            throw new AssertionError(message);
         }
     }
 }

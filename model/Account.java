@@ -2,7 +2,6 @@
 package model;
 
 import java.io.Serializable;
-import java.util.concurrent.locks.ReentrantLock;
 
 import exception.AccountNotFoundException;
 import exception.BankException;
@@ -24,7 +23,6 @@ public abstract class Account
 
     private boolean active;
     private transient String sessionNote = "Active session";
-    private final ReentrantLock accountLock = new ReentrantLock();
 
     private static long accountCounter = 0;
     private static final long serialVersionUID = 1L;
@@ -52,7 +50,6 @@ public abstract class Account
         this(ownerName, 0);
     }
 
-    @Override
     public abstract double interestRate();
 
     public abstract boolean canWithdraw(long amount);
@@ -61,48 +58,37 @@ public abstract class Account
         return balance * interestRate() / 100.0 / 12.0;
     }
 
-    @Override
-    public void deposit(long amount) throws InvalidAmountException {
-        accountLock.lock();
-        try {
-            if (amount <= 0) {
-                throw new InvalidAmountException(
-                        "Deposit amount must be positive."
-                );
-            }
-
-            balance += amount;
-        } finally {
-            accountLock.unlock();
+    public synchronized void deposit(long amount) throws InvalidAmountException {
+        if (amount <= 0) {
+            throw new InvalidAmountException(
+                    "Deposit amount must be positive."
+            );
         }
+
+        balance += amount;
     }
 
-    @Override
-    public boolean withdraw(long amount)
+    public synchronized boolean withdraw(long amount)
             throws InsufficientFundsException, InvalidAmountException {
-        accountLock.lock();
-        try {
-            if (amount <= 0) {
-                throw new InvalidAmountException(
-                        "Withdrawal amount must be positive."
-                );
-            }
 
-            if (!canWithdraw(amount)) {
-                long shortfall = amount - balance;
-
-                if (shortfall < 0) {
-                    shortfall = 0;
-                }
-
-                throw new InsufficientFundsException(shortfall);
-            }
-
-            balance -= amount;
-            return true;
-        } finally {
-            accountLock.unlock();
+        if (amount <= 0) {
+            throw new InvalidAmountException(
+                    "Withdrawal amount must be positive."
+            );
         }
+
+        if (!canWithdraw(amount)) {
+            long shortfall = amount - balance;
+
+            if (shortfall < 0) {
+                shortfall = 0;
+            }
+
+            throw new InsufficientFundsException(shortfall);
+        }
+
+        balance -= amount;
+        return true;
     }
 
     public void transfer(Account to, long amount) throws BankException {
@@ -175,17 +161,11 @@ public abstract class Account
             higher = first;
         }
 
-        lower.accountLock.lock();
-        try {
-            higher.accountLock.lock();
-            try {
+        synchronized (lower) {
+            synchronized (higher) {
                 first.withdraw(amount);
                 second.deposit(amount);
-            } finally {
-                higher.accountLock.unlock();
             }
-        } finally {
-            lower.accountLock.unlock();
         }
 
         System.out.println(
@@ -200,7 +180,6 @@ public abstract class Account
         return ownerName;
     }
 
-    @Override
     public long getBalance() {
         return balance;
     }
@@ -234,22 +213,16 @@ public abstract class Account
     public int hashCode() {
         return accountNumber.hashCode();
     }
-    @Override
-    public int compareTo(Account other) {
+public int compareTo(Account other) {
     return this.getAccountNumber()
                .compareTo(other.getAccountNumber());
 }
     public String getStatement() {
-        return """
-               ----- ACCOUNT STATEMENT -----;
-               Account Number: """ + accountNumber + "\n"
+        return "----- ACCOUNT STATEMENT -----\n"
+                + "Account Number: " + accountNumber + "\n"
                 + "Owner Name: " + ownerName + "\n"
                 + "Balance: " + balance + "\n"
                 + "Active: " + active + "\n"
                 + "-----------------------------";
-    }
-
-    public void setSessionNote(String sessionNote) {
-        this.sessionNote = sessionNote;
     }
 }

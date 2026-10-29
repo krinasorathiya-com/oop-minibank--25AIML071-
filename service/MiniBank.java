@@ -315,7 +315,8 @@ public class MiniBank {
 
         ArrayList<Account> accounts = bankService.listAccounts();
 
-        StatePersister.save(accounts.toArray(Account[]::new), ACCOUNTS_FILE);
+        StatePersister.save(
+                accounts.toArray(new Account[0]), ACCOUNTS_FILE);
 
         ReportGenerator.generate(LOG_DIRECTORY, REPORT_FILE);
 

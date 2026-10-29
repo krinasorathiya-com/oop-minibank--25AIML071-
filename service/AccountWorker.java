@@ -1,14 +1,14 @@
 
-package service;
+package src.test.java.service;
 
 import exception.InvalidAmountException;
 import model.Account;
 
 public class AccountWorker implements Runnable {
 
-    private final Account account;
-    private final int times;
-    private final long amount;
+    private Account account;
+    private int times;
+    private long amount;
 
     public AccountWorker(Account account, int times, long amount) {
         this.account = account;

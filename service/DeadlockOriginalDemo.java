@@ -1,7 +1,5 @@
 
-package service;
-
-import java.util.concurrent.locks.LockSupport;
+package src.test.java.service;
 
 public class DeadlockOriginalDemo {
 
@@ -14,8 +12,10 @@ public class DeadlockOriginalDemo {
             synchronized (lockA) {
                 System.out.println("Thread 1 locked A");
 
-                LockSupport.parkNanos(100_000_000L);
-                if (Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     return;
                 }
 
@@ -31,8 +31,10 @@ public class DeadlockOriginalDemo {
             synchronized (lockB) {
                 System.out.println("Thread 2 locked B");
 
-                LockSupport.parkNanos(100_000_000L);
-                if (Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     return;
                 }
 

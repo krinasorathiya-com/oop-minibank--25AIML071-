@@ -1,7 +1,6 @@
 package model;
 
 import java.io.Serializable;
-
 import model.annotation.Id;
 
 public class Customer implements Serializable, Cloneable {
@@ -55,15 +54,19 @@ private static final long serialVersionUID = 1L;
     }
 
     @Override
-    public Customer clone() throws CloneNotSupportedException {
-        return (Customer) super.clone();
+    public Customer clone() {
+        try {
+            return (Customer) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e);
+        }
     }
 
     public static class Address {
 
-        private final String line;
-        private final String city;
-        private final String pincode;
+        private String line;
+        private String city;
+        private String pincode;
 
         public Address(String line, String city, String pincode) {
             this.line = line;

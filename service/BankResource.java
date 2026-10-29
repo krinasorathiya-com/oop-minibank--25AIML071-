@@ -1,4 +1,4 @@
-package service;
+package src.test.java.service;
 
 public class BankResource implements AutoCloseable {
 
